@@ -1,0 +1,516 @@
+{
+  "info": {
+    "_postman_id": "4eb9502a-53b5-4cce-9b0f-accounts-practice",
+    "name": "Clientes Cuentas Microservicio",
+    "description": "Coleccion de ejemplo para probar la practica de gestion de clientes y cuentas bancarias.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "existingCustomerDni",
+      "value": "11111111A",
+      "type": "string"
+    },
+    {
+      "key": "newCustomerDni",
+      "value": "66666666F",
+      "type": "string"
+    },
+    {
+      "key": "missingCustomerDni",
+      "value": "99999999Z",
+      "type": "string"
+    },
+    {
+      "key": "existingAccountId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "missingAccountId",
+      "value": "9999",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Obtener todos los clientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clientes"
+              ]
+            },
+            "description": "Devuelve todos los clientes con sus cuentas asociadas."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener clientes mayores de edad",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clientes/mayores-de-edad",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clientes",
+                "mayores-de-edad"
+              ]
+            },
+            "description": "Devuelve clientes cuya edad es mayor o igual a 18 anos."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener clientes con cuenta superior a 100000",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clientes/con-cuenta-superior-a/100000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clientes",
+                "con-cuenta-superior-a",
+                "100000"
+              ]
+            },
+            "description": "Devuelve clientes cuya suma total de cuentas supera 100000."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener cliente por DNI",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clientes/{{existingCustomerDni}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clientes",
+                "{{existingCustomerDni}}"
+              ]
+            },
+            "description": "Caso correcto: busca un cliente existente por DNI."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener cliente inexistente - 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/clientes/{{missingCustomerDni}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "clientes",
+                "{{missingCustomerDni}}"
+              ]
+            },
+            "description": "Caso de error esperado: cliente no encontrado."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cuentas",
+      "item": [
+        {
+          "name": "Crear cuenta para cliente existente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dniCliente\": \"{{existingCustomerDni}}\",\n  \"tipoCuenta\": \"NORMAL\",\n  \"total\": 50000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cuentas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cuentas"
+              ]
+            },
+            "description": "Crea una cuenta nueva para un cliente ya existente."
+          },
+          "response": []
+        },
+        {
+          "name": "Crear cuenta con cliente nuevo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dniCliente\": \"{{newCustomerDni}}\",\n  \"tipoCuenta\": \"PREMIUM\",\n  \"total\": 150000,\n  \"cliente\": {\n    \"nombre\": \"Laura\",\n    \"apellido1\": \"Garcia\",\n    \"apellido2\": \"Martin\",\n    \"fechaNacimiento\": \"1990-04-15\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cuentas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cuentas"
+              ]
+            },
+            "description": "Crea una cuenta y, si el cliente no existe, crea tambien el cliente asociado."
+          },
+          "response": []
+        },
+        {
+          "name": "Crear cuenta con tipo en minusculas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dniCliente\": \"77777777G\",\n  \"tipoCuenta\": \"normal\",\n  \"total\": 25000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cuentas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cuentas"
+              ]
+            },
+            "description": "Comprueba la normalizacion del tipo de cuenta a mayusculas."
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar saldo de cuenta",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"total\": 180000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cuentas/{{existingAccountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cuentas",
+                "{{existingAccountId}}"
+              ]
+            },
+            "description": "Actualiza el saldo de una cuenta existente. Si el id no existe, cambia la variable existingAccountId por un id devuelto por GET /clientes."
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar cuenta inexistente - 404",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"total\": 180000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cuentas/{{missingAccountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cuentas",
+                "{{missingAccountId}}"
+              ]
+            },
+            "description": "Caso de error esperado: cuenta no encontrada."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Validaciones",
+      "item": [
+        {
+          "name": "Crear cuenta sin DNI - 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoCuenta\": \"NORMAL\",\n  \"total\": 50000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cuentas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cuentas"
+              ]
+            },
+            "description": "Caso de validacion esperado: falta dniCliente."
+          },
+          "response": []
+        },
+        {
+          "name": "Crear cuenta con saldo negativo - 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dniCliente\": \"{{existingCustomerDni}}\",\n  \"tipoCuenta\": \"NORMAL\",\n  \"total\": -10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cuentas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cuentas"
+              ]
+            },
+            "description": "Caso de validacion esperado: el saldo no puede ser negativo."
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar cuenta con saldo negativo - 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"total\": -1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cuentas/{{existingAccountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cuentas",
+                "{{existingAccountId}}"
+              ]
+            },
+            "description": "Caso de validacion esperado: el nuevo saldo no puede ser negativo."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Swagger y OpenAPI",
+      "item": [
+        {
+          "name": "Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/swagger-ui/index.html",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "swagger-ui",
+                "index.html"
+              ]
+            },
+            "description": "Interfaz Swagger de la API."
+          },
+          "response": []
+        },
+        {
+          "name": "OpenAPI JSON",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v3/api-docs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs"
+              ]
+            },
+            "description": "Documento OpenAPI generado por Springdoc."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
