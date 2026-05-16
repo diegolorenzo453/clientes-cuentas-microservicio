@@ -24,6 +24,7 @@ Microservicio REST desarrollado con Spring Boot para gestionar clientes y cuenta
 - Alta de una cuenta bancaria para un cliente existente.
 - Alta de una cuenta bancaria creando el cliente asociado si no existe.
 - Actualización del saldo de una cuenta bancaria.
+- Validación de tipos de cuenta mediante enum (`NORMAL`, `PREMIUM`, `JUNIOR`).
 - Manejo centralizado de errores `400` y `404`.
 - Documentación Swagger/OpenAPI.
 - Colección de Postman con casos de prueba.
@@ -71,7 +72,7 @@ Para ejecutar la suite de tests:
 mvn test
 ```
 
-Los tests usan Spring Boot Test y MockMvc. Cubren los flujos principales del enunciado: consultas, altas, actualización de saldo, validaciones `400` y recursos no encontrados `404`.
+Los tests combinan pruebas de integración con Spring Boot Test y MockMvc, más pruebas unitarias puras de dominio. Cubren consultas, altas, actualización de saldo, validaciones `400`, recursos no encontrados `404`, reglas de saldo, mayoría de edad y cálculo de saldo total.
 
 ## Colección de Postman
 
@@ -256,6 +257,8 @@ Responsabilidades principales:
 - Los controladores se mantienen finos y delegan la conversión de DTOs en `CustomerAccountRestMapper`.
 - La lógica de mayoría de edad y suma total de cuentas vive en el modelo `Customer`.
 - El endpoint `POST /cuentas` cubre cliente existente, cliente nuevo informado en la petición y cliente mínimo cuando solo llega el DNI.
+- El tipo de cuenta se modela como enum de dominio (`AccountType`) para restringir valores a `NORMAL`, `PREMIUM` y `JUNIOR`.
+- La consulta de clientes con cuentas evita el patrón N+1 cargando todas las cuentas de los clientes en una única consulta y agrupándolas en memoria.
 - Los nombres internos de clases, archivos, métodos y variables están en inglés.
 - Las rutas y propiedades JSON se mantienen en español para respetar el contrato del enunciado.
 - El banner de arranque se personalizó en `src/main/resources/banner.txt`.
@@ -280,6 +283,7 @@ Las peticiones de entrada usan Bean Validation:
 - `@NotNull` para importes obligatorios.
 - `@DecimalMin("0.0")` para evitar saldos negativos.
 - `@Valid` para validar el cliente anidado al crear una cuenta.
+- `AccountType` para validar que el tipo de cuenta sea `NORMAL`, `PREMIUM` o `JUNIOR`.
 
 Los errores se gestionan en `ApiExceptionHandler`, devolviendo respuestas homogéneas con `timestamp`, `status`, `error` y `details`.
 
