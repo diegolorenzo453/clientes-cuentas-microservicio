@@ -28,6 +28,18 @@ public class BankAccountPersistenceAdapter implements BankAccountRepositoryPort 
     }
 
     @Override
+    public List<BankAccount> findByCustomerNationalIds(List<String> customerNationalIds) {
+        if (customerNationalIds.isEmpty()) {
+            return List.of();
+        }
+
+        return repository.findByCustomerNationalIdIn(customerNationalIds).stream()
+                .map(this::toDomain)
+                .sorted(Comparator.comparing(BankAccount::getId))
+                .toList();
+    }
+
+    @Override
     public Optional<BankAccount> findById(Long id) {
         return repository.findById(id).map(this::toDomain);
     }

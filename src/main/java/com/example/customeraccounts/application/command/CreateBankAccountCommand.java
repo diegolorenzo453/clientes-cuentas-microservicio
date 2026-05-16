@@ -1,11 +1,13 @@
 package com.example.customeraccounts.application.command;
 
+import com.example.customeraccounts.domain.model.AccountType;
+
 import java.math.BigDecimal;
 import java.util.Optional;
 
 public record CreateBankAccountCommand(
         String customerNationalId,
-        String accountType,
+        AccountType accountType,
         BigDecimal balance,
         NewCustomerCommand newCustomer
 ) {

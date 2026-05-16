@@ -1,5 +1,6 @@
 package com.example.customeraccounts.infrastructure.web.dto;
 
+import com.example.customeraccounts.domain.model.AccountType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,7 +17,7 @@ public record BankAccountResponse(
 
         @Schema(example = "PREMIUM")
         @JsonProperty("tipoCuenta")
-        String accountType,
+        AccountType accountType,
 
         @Schema(example = "150000")
         @JsonProperty("total")

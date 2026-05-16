@@ -10,13 +10,13 @@ public class BankAccount {
 
     private final Long id;
     private final String customerNationalId;
-    private final String accountType;
+    private final AccountType accountType;
     private BigDecimal balance;
 
-    public BankAccount(Long id, String customerNationalId, String accountType, BigDecimal balance) {
+    public BankAccount(Long id, String customerNationalId, AccountType accountType, BigDecimal balance) {
         this.id = id;
         this.customerNationalId = requireText(customerNationalId, "customerNationalId");
-        this.accountType = requireText(accountType, "accountType").toUpperCase();
+        this.accountType = Objects.requireNonNull(accountType, "accountType");
         updateBalance(balance);
     }
 

@@ -1,7 +1,8 @@
 package com.example.customeraccounts.infrastructure.config;
 
-import com.example.customeraccounts.domain.model.Customer;
+import com.example.customeraccounts.domain.model.AccountType;
 import com.example.customeraccounts.domain.model.BankAccount;
+import com.example.customeraccounts.domain.model.Customer;
 import com.example.customeraccounts.domain.port.CustomerRepositoryPort;
 import com.example.customeraccounts.domain.port.BankAccountRepositoryPort;
 import org.springframework.boot.CommandLineRunner;
@@ -33,13 +34,13 @@ public class DataInitializer {
             customers.forEach(customerRepository::save);
 
             List<BankAccount> bankAccounts = List.of(
-                    bankAccount("11111111A", "PREMIUM", "150000"),
-                    bankAccount("11111111A", "NORMAL", "20000"),
-                    bankAccount("22222222B", "NORMAL", "50000"),
-                    bankAccount("22222222B", "JUNIOR", "300"),
-                    bankAccount("33333333C", "JUNIOR", "300"),
-                    bankAccount("44444444D", "NORMAL", "75000"),
-                    bankAccount("55555555E", "PREMIUM", "120000")
+                    bankAccount("11111111A", AccountType.PREMIUM, "150000"),
+                    bankAccount("11111111A", AccountType.NORMAL, "20000"),
+                    bankAccount("22222222B", AccountType.NORMAL, "50000"),
+                    bankAccount("22222222B", AccountType.JUNIOR, "300"),
+                    bankAccount("33333333C", AccountType.JUNIOR, "300"),
+                    bankAccount("44444444D", AccountType.NORMAL, "75000"),
+                    bankAccount("55555555E", AccountType.PREMIUM, "120000")
             );
 
             bankAccounts.forEach(bankAccountRepository::save);
@@ -50,7 +51,7 @@ public class DataInitializer {
         return new Customer(nationalId, firstName, firstSurname, secondSurname, LocalDate.parse(birthDate, SPANISH_DATE));
     }
 
-    private BankAccount bankAccount(String customerNationalId, String accountType, String balance) {
+    private BankAccount bankAccount(String customerNationalId, AccountType accountType, String balance) {
         return new BankAccount(null, customerNationalId, accountType, new BigDecimal(balance));
     }
 }

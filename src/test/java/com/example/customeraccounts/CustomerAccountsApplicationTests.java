@@ -165,6 +165,21 @@ class CustomerAccountsApplicationTests {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status", is(400)));
     }
+
+    @Test
+    void postBankAccountsRejectsUnsupportedAccountType() throws Exception {
+        mockMvc.perform(post("/cuentas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "dniCliente": "11111111A",
+                                  "tipoCuenta": "VIP",
+                                  "total": 50000
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status", is(400)));
+    }
 }
 
 

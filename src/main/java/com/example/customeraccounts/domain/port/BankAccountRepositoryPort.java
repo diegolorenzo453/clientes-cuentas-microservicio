@@ -9,6 +9,8 @@ public interface BankAccountRepositoryPort {
 
     List<BankAccount> findByCustomerNationalId(String customerNationalId);
 
+    List<BankAccount> findByCustomerNationalIds(List<String> customerNationalIds);
+
     Optional<BankAccount> findById(Long id);
 
     BankAccount save(BankAccount bankAccount);

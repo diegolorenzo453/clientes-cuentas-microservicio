@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerAccountService {
@@ -82,9 +84,18 @@ public class CustomerAccountService {
     }
 
     private List<Customer> loadCustomersWithAccounts() {
-        return customerRepository.findAll().stream()
-                .map(this::withBankAccounts)
+        List<Customer> customers = customerRepository.findAll();
+        List<String> customerNationalIds = customers.stream()
+                .map(Customer::getNationalId)
                 .toList();
+        Map<String, List<BankAccount>> bankAccountsByCustomer = bankAccountRepository.findByCustomerNationalIds(customerNationalIds).stream()
+                .collect(Collectors.groupingBy(BankAccount::getCustomerNationalId));
+
+        customers.forEach(customer -> customer.replaceBankAccounts(
+                bankAccountsByCustomer.getOrDefault(customer.getNationalId(), List.of())
+        ));
+
+        return customers;
     }
 
 }

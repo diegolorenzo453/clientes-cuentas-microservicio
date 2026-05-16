@@ -8,6 +8,8 @@ import java.util.List;
 public interface SpringDataBankAccountRepository extends JpaRepository<BankAccountJpaEntity, Long> {
 
     List<BankAccountJpaEntity> findByCustomerNationalId(String customerNationalId);
+
+    List<BankAccountJpaEntity> findByCustomerNationalIdIn(List<String> customerNationalIds);
 }
 
 
