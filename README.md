@@ -263,6 +263,24 @@ Responsabilidades principales:
 - Las rutas y propiedades JSON se mantienen en español para respetar el contrato del enunciado.
 - El banner de arranque se personalizó en `src/main/resources/banner.txt`.
 
+## Escalabilidad de consultas
+
+La implementación actual es suficiente para la prueba técnica y evita el patrón N+1 al cargar clientes con sus cuentas. Si las tablas crecieran hasta millones de registros, las principales mejoras serían:
+
+- Añadir paginación y ordenación en endpoints de listado, especialmente en `GET /clientes`, para evitar cargar todos los registros en memoria.
+- Crear índices sobre los campos más usados en búsquedas y relaciones: `customers.national_id`, `customers.birth_date`, `bank_accounts.customer_national_id` y `bank_accounts.balance`.
+- Reemplazar filtros pesados en memoria por consultas específicas en base de datos cuando el volumen lo requiera, por ejemplo para clientes mayores de edad o clientes con saldo total superior a una cantidad.
+- Usar `JOIN`, `GROUP BY` y agregaciones en consultas optimizadas para casos como saldo total por cliente, evitando traer más datos de los necesarios a la aplicación.
+- Utilizar proyecciones o DTOs de consulta en listados grandes cuando no sea necesario hidratar el modelo completo de dominio.
+- Mantener restricciones a nivel de base de datos, como unicidad de DNI, claves foráneas y valores válidos de tipo de cuenta.
+- Valorar paginación por cursor o keyset pagination en listados muy grandes, evitando el coste creciente de `OFFSET` en páginas profundas.
+- Revisar el tamaño del pool de conexiones y los timeouts de base de datos según la carga real de la aplicación.
+- Aplicar caché solo en consultas de lectura frecuentes y poco cambiantes, por ejemplo catálogos o datos agregados, evitando cachear información bancaria sensible sin una estrategia clara de invalidación.
+- Añadir métricas y trazas para detectar consultas lentas, consumo de memoria, tiempos de respuesta y posibles cuellos de botella antes de optimizar prematuramente.
+- Separar operaciones de lectura y escritura si el volumen lo justificara, usando réplicas de lectura o consultas especializadas para reporting.
+
+Estas mejoras permitirían que el microservicio evolucionara hacia un escenario con grandes volúmenes de datos sin comprometer memoria, tiempos de respuesta ni claridad del diseño.
+
 ## Uso de Streams, Optionals y lambdas
 
 El proyecto incluye uso explícito de Streams, lambdas y Optionals en puntos relevantes:
